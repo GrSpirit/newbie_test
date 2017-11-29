@@ -12,7 +12,7 @@ class Socket {
 public:
 	Socket(const string &host, int port);
 	Socket(int sock) : _sock(sock) {}
-	~Socket();
+	virtual ~Socket();
 	int getPort() const;
 	string getHost() const;
 	int getSocketId() const;

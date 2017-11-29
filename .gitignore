@@ -1,3 +1,4 @@
 *.o
 task2_test
 simple_server
+*.swp

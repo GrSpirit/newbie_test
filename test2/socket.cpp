@@ -5,6 +5,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <algorithm>
+#include <iostream>
 
 Socket::Socket(const string &host, int port) : _host(host), _port(port) {
 	_sock = socket(AF_INET, SOCK_STREAM, 0);
