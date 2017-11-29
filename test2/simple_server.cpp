@@ -24,9 +24,7 @@ int main(int argc, char *argv[])
 	try {
 		SocketServer server(host, port);
 		server.start(1);
-		cout << "Accept\n";
 		Socket channel = server.accept();
-		cout << "Read\n";
 		char buf[1024];
 		bzero(buf, sizeof(buf));
 		channel.read((BYTE*)buf, sizeof(buf));
