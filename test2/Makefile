@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -Wall
-COBJ = task2_test.o socket.o socket_client.o
+COBJ = task2_test.o socket.o socket_client.o memory_buf.o message.o
 SOBJ = socket.o socket_server.o simple_server.o
 
 all: task2_test simple_server
@@ -11,7 +11,7 @@ task2_test: $(COBJ)
 simple_server: $(SOBJ)
 	$(CC) $(CFLAGS) -o $@ $^
 
-%.o: %.c %.h %.cpp %.hpp $(DEPS)
+.cpp.o:
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
