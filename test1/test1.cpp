@@ -19,11 +19,17 @@ int main(int argc, char* argv[])
 		cout << "Wrong arguments\n";
 		return 2;
 	}
-	ofstream fout(argv[1], ios::out | ios::binary);
-	MemoryBuf buf(2048);
-	make_message(cin, buf);
-	fout.write((const char*)buf.data(), buf.size());
-	fout.close();
+	try {
+		ofstream fout(argv[1], ios::out | ios::binary);
+		MemoryBuf buf(2048); // check buffer size
+		make_message(cin, buf);
+		fout.write((const char*)buf.data(), buf.size());
+		fout.close();
+	}
+	catch(const char *msg) {
+		cerr << msg << endl;
+	}
+	return 0;
 }
 
 void make_message(istream &src, MemoryBuf &dst) 
