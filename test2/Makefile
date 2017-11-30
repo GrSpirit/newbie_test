@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall
+CFLAGS = -Wall -std=c++11
 COBJ = task2_test.o socket.o socket_client.o memory_buf.o message.o
 SOBJ = socket.o socket_server.o simple_server.o
 

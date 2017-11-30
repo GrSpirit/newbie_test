@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include "socket_client.hpp"
 #include "types.h"
+#include "message.h"
 
 using namespace std;
 
@@ -17,6 +18,7 @@ int main(int argc, char* argv[])
 	try {
 		string msg = "Say hello!";
 		client.connect();
+		MemoryBuf buff(2048);
 		client.write((const BYTE*)msg.c_str(), msg.size());
 	}
 	catch(string msg) {
