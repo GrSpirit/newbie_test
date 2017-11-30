@@ -1,11 +1,17 @@
+#include "memory_buf.hpp"
 #include <iostream>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <cstring>
+
 using namespace std;
 
-typedef unsigned char BYTE;
-typedef unsigned short WORD;
-typedef unsigned int DWORD;
+typedef uint8_t BYTE;
+typedef uint16_t WORD;
+typedef uint32_t DWORD;
+
+void make_message(istream &src, MemoryBuf &dst);
 
 int main(int argc, char* argv[]) 
 {
@@ -13,37 +19,47 @@ int main(int argc, char* argv[])
 		cout << "Wrong arguments\n";
 		return 2;
 	}
-	FILE *f = fopen(argv[1], "w");
-	unsigned int n;
-	int len;
+	ofstream fout(argv[1], ios::out | ios::binary);
+	MemoryBuf buf(2048);
+	make_message(cin, buf);
+	fout.write((const char*)buf.data(), buf.size());
+	fout.close();
+}
+
+void make_message(istream &src, MemoryBuf &dst) 
+{
+	DWORD n;
+	size_t len;
+	char buf[255];
 	string s;
 	vector<BYTE> v;
-	cin >> n;
-	fwrite(&n, sizeof(int), 1, f);
+	src >> n;
+	dst.put(n);
 	while (n != 0) {
 		if ((n & 1) == 1) {
 			char t;
-			cin >> t; cin.ignore();
-			fputc(t, f);
+			src >> t; src.ignore();
+			dst.put(t);
 			switch(t) {
 				case 'N':
 					WORD d;
-					cin >> d;
-					fwrite(&d, sizeof(d), 1, f);
+					src >> d;
+					dst.put(d);
 					break;
 				case 'U':
 					DWORD u;
-					cin >> u;
-					fwrite(&u, sizeof(u), 1, f);
+					src >> u;
+					dst.put(u);
 					break;
 				case 'S':
-					getline(cin, s);
+					getline(src, s);
 					len = s.size();
-					fprintf(f, "%0.3d", len);
-					fwrite(s.c_str(), sizeof(char), s.size(), f);
+					sprintf(buf, "%0.3d", len);
+					dst.write(buf, strlen(buf));
+					dst.write(s.c_str(), s.size());
 					break;
 				case 'H':
-					getline(cin, s);
+					getline(src, s);
 					len = s.size();
 					v.clear();
 
@@ -51,24 +67,22 @@ int main(int argc, char* argv[])
 						BYTE x = stol(s.substr(j, 2).c_str(), nullptr, 16);
 						v.push_back(x);
 					}
-					fprintf(f, "%0.3d", v.size());
-					fwrite(v.data(), sizeof(BYTE), v.size(), f);
+					sprintf(buf, "%0.3d", v.size());
+					dst.write(buf, strlen(buf));
+					dst.write(v.data(), v.size());
 					break;
 				case 'D':
 					char l;
-					cin >> l;
-					cin >> s;
-					fputc(s.size() + '0', f);
-					fputc(l - '0', f);
-					fwrite(s.c_str(), sizeof(char), s.size(), f);
+					src >> l;
+					src >> s;
+					dst.put((char)(s.size() + '0'));
+					dst.put((char)(l - '0'));
+					dst.write(s.c_str(), s.size());
 					break;
 				default:
-					cerr << "Wrong field format\n";
-					return -1;
+					throw "Wrong field format\n";
 			}
 		}
 		n >>= 1;
 	}
-	fclose(f);
 }
-
