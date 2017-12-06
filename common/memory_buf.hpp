@@ -7,9 +7,6 @@
 
 class MemoryBuf {
 	std::vector<uint8_t> _buf;
-//	uint8_t *_buf;
-//	size_t _max_size;
-//	size_t _size;
 public:
 	MemoryBuf() {}
 	void write(const uint8_t *bytes, size_t size) {

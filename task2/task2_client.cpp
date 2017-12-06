@@ -6,9 +6,11 @@
 #include "message.hpp"
 
 using namespace std;
+#define MAX_BUFFER 1024
 
 int main(int argc, char* argv[])
 {
+	char buff[MAX_BUFFER];
 	if (argc != 3) {
 		cerr << "Wrong number of arguments\n";
 		cerr << "Usage: task2_test ipaddr port\n";
@@ -17,9 +19,14 @@ int main(int argc, char* argv[])
 	SocketClient client(argv[1], atoi(argv[2]));
 	try {
 		client.connect();
-		MemoryBuf buff = make_message(cin);
-		cout << "Sending " << buff.size() << " bytes\n";
-		client.write((const BYTE*)buff.data(), buff.size());
+		while (true) {
+			MemoryBuf mess = make_message(cin);
+			cout << "Sending " << mess.size() << " bytes...\n";
+			client.write((const BYTE*)mess.data(), mess.size());
+			memset(buff, 0, sizeof(buff));
+			client.read((BYTE*)buff, sizeof(buff));
+			cout << buff << endl;
+		}
 	}
 	catch(string msg) {
 		cerr << msg << endl;
