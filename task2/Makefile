@@ -1,18 +1,21 @@
 CC = g++
 CFLAGS = -Wall -std=c++11
-COBJ = task2_test.o socket.o socket_client.o memory_buf.o message.o
-SOBJ = socket.o socket_server.o simple_server.o
+INCLUDE = -I../common/
+C_SRC = task2_client.cpp socket.cpp socket_client.cpp ../common/message.cpp
+C_OBJ = $(C_SRC:.cpp=.o)
+S_SRC = socket.cpp socket_server.cpp simple_server.cpp
+S_OBJ = $(S_SRC:.cpp=.o)
 
 all: task2_test simple_server
 
-task2_test: $(COBJ)
+task2_test: $(C_OBJ)
 	$(CC) $(CFLAGS) -o $@ $^
 
-simple_server: $(SOBJ)
+simple_server: $(S_OBJ)
 	$(CC) $(CFLAGS) -o $@ $^
 
 .cpp.o:
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $< $(INCLUDE)
 
 clean:
 	@rm -f task2_test simple_server *.o
